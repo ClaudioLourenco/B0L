@@ -142,7 +142,7 @@ function OnTick()
 	end
 	if Menu.useFarm then
 		EnemyMinions:update()
-		local target = SOWKillableMinion()
+		local target = SOWKillableMinion() or SOWi:GetTarget()
 		SOWOrbWalk(target) 
 	end
 end
@@ -194,7 +194,7 @@ function Combo()
 			afterCombo = true
 		end
 		if afterCombo and not Ready(_R) then
-			if Ready(_W) and (tsDistance < 200 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
+			if Ready(_W) and (tsDistance < 175 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
 				CastSpell(_W)
 			end
 			if Ready(_Q) and tsDistance < 550 then
@@ -307,11 +307,13 @@ end
 
 function AutoIGN()
 	local igniteDMG = 50 + 20 * myHero.level
-	for _, enemy in pairs(enemyHeroes) do
-		if enemy.health <= igniteDMG and GetDistance(enemy) < 600 and Ready(ignite) then
-			CastSpell(ignite, enemy)
+	--for _, enemy in pairs(enemyHeroes) do
+	if ts.target ~= nil then
+		if ts.target.health <= igniteDMG and tsDistance < 600 and Ready(ignite) then
+			CastSpell(ignite, ts.target)
 		end
 	end
+	--end
 end
 
 function enemiesClose(range)
