@@ -1,4 +1,4 @@
-local version = "0.51"
+local version = "0.52"
 
 if myHero.charName ~= "Fizz" then return end
 
@@ -195,7 +195,7 @@ function Combo()
 		if not Ready(_Q) and not Ready(_E) and not Ready(_R) then
 			afterCombo = true
 		end
-		if os.clock > Rcheck + 3 and (Ready(_Q) or Ready(_E)) then
+		if os.clock() > Rcheck + 3 and (Ready(_Q) or Ready(_E)) then
 			afterCombo = true
 		end
 		
