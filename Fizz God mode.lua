@@ -150,6 +150,7 @@ end
 function Combo()
 	DMGcalc()
 	if ts.target ~= nil then
+	
 		if Ready(DFG) and tsDistance < 750 then
 			CastSpell(DFG, ts.target)
 		end
@@ -158,19 +159,19 @@ function Combo()
 			CastR(ts.target)
 			Rcheck = os.clock()
 		end
-		if tsDistance < 175 and os.clock() < Rcheck + 1 and ts.target.health > cmbo2 then
+		if SOWi:CanAttack() and SOWi:ValidTarget(ts.target) and not SOWi:BeforeAttack(ts.target) and os.clock() < Rcheck + 1 and ts.target.health > cmbo2 then
 			if Ready(_W) then CastSpell(_W) end
 				AAcheckY = os.clock()
 				SOWi:Attack(ts.target)
 		end
-		if Ready(_E) and tsDistance > 600 and tsDistance < 800 and os.clock() < Rcheck + 1 and ts.target.health > cmbo2 then
+		if Ready(_E) and tsDistance > 600 and tsDistance < 900 and os.clock() < Rcheck + 1 and ts.target.health > cmbo2 then
 			CastE(ts.target)
 		end
 		if Ready(_W) and tsDistance < 550 and os.clock() < Rcheck + 2 then
 			CastSpell(_W)
 			Wcheck = os.clock()
 		end
-		if tsDistance < 175 and os.clock() < Wcheck + 1 and ts.target.health > cmbo2 then
+		if SOWi:CanAttack() and SOWi:ValidTarget(ts.target) and not SOWi:BeforeAttack(ts.target) and os.clock() < Wcheck + 1 and ts.target.health > cmbo2 then
 			AAcheckY = os.clock()
 			SOWi:Attack(ts.target)
 		end
@@ -190,9 +191,14 @@ function Combo()
 			local Mv = Vector(myHero) + 400 * (Vector(mousePos) - Vector(myHero)):normalized()
 			SOWi:MoveTo(Mv.x, Mv.z)
 		end
+		
 		if not Ready(_Q) and not Ready(_E) and not Ready(_R) then
 			afterCombo = true
 		end
+		if os.clock > Rcheck + 3 and (Ready(_Q) or Ready(_E)) then
+			afterCombo = true
+		end
+		
 		if afterCombo and not Ready(_R) then
 			if Ready(_W) and (tsDistance < 175 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
 				CastSpell(_W)
