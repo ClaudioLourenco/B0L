@@ -86,7 +86,7 @@ function OnLoad()
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRK", "Mark combo killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRKcol", "Color", SCRIPT_PARAM_COLOR, {255, 112, 0, 0})
 		Menu:addSubMenu("Addons", "ads")
-			Menu.drawings.drawingsSLF:addParam("spi", "Ignite currently not working", SCRIPT_PARAM_INFO, "")
+			Menu.ads:addParam("spi", "Ignite currently not working", SCRIPT_PARAM_INFO, "")
 			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.ads:addParam("spellLVL", "Leveling spells mode", SCRIPT_PARAM_LIST, 1, {"none", "E > W", "E > Q", "W > Q", "W > E", "Q > E", "Q > W"})
 			
@@ -207,7 +207,7 @@ function Combo()
 			if Ready(_Q) and tsDistance < 550 then
 				CastSpell(_Q, ts.target)
 			end
-			if Ready(_E) and tsDistance < 850 and tsDistance > 200 then
+			if Ready(_E) and tsDistance < 900 and tsDistance > 200 then
 				CastE(ts.target)
 			end
 			SOWOrbWalk(ts.target)
@@ -321,14 +321,8 @@ function AutoIGN()
 		end
 	end
 	--end
-end
-
-function enemiesClose(range)
-	enmsClose = 0
-	for _, enemy in pairs(enemyHeroes) do
-		if not enemy.dead and GetDistance(enemy) < range then enmsClose = enmsClose + 1 end
-	end
-	return enmsClose
+	-- dunno why doesn't work
+	-- will try to repair it soon
 end
 
 function Initiate()
