@@ -340,10 +340,7 @@ end
 
 function GetItems()
 	DFG = GetInventorySlotItem(3128)
-	if ts.target ~= nil then 
-		tsDistance = GetDistance(ts.target)
-		myAA = getDmg("AD",ts.target,myHero)
-	end
+	if ts.target ~= nil then tsDistance = GetDistance(ts.target) end
 end
 
 function Ready(spell)
