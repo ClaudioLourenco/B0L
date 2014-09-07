@@ -1,15 +1,12 @@
 local version = "0.5"
---[[
-	Comment? :_: ^_^
-]]
 
 if myHero.charName ~= "Fizz" then return end
 
 _G.Fizz_Autoupdate = true
 
 local lib_Required = {
-	["SOW"]			= "https://raw.githubusercontent.com/Hellsing/BoL/master/Common/SOW.lua",
-	["VPrediction"]	= "https://raw.githubusercontent.com/Hellsing/BoL/master/Common/VPrediction.lua"
+	["SOW"]			= "https://raw.githubusercontent.com/Hellsing/BoL/master/common/SOW.lua",
+	["VPrediction"]	= "https://raw.githubusercontent.com/Hellsing/BoL/master/common/VPrediction.lua"
 }
 
 local lib_downloadNeeded, lib_downloadCount = false, 0
@@ -37,8 +34,8 @@ end
 if lib_downloadNeeded then return end
 
 local script_downloadName = "Fizz God mode"
-local script_downloadHost = "raw.github.com"
-local script_downloadPath = "bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
+local script_downloadHost = "raw.githubusercontent.com"
+local script_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
 local script_downloadUrl = "https://" .. script_downloadHost .. script_downloadPath
 local script_filePath = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 
@@ -71,7 +68,6 @@ if _G.Fizz_Autoupdate then
 end
 
 
-
 function OnLoad()
 	Variables()
 	
@@ -88,7 +84,7 @@ function OnLoad()
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAA", "Draw AA's range", SCRIPT_PARAM_ONOFF, false)
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAAcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
-			Menu.drawings.drawingsSLF:addParam("SLFrangeQ", "Draw Q's range", SCRIPT_PARAM_ONOFF, false)
+			Menu.drawings.drawingsSLF:addParam("SLFrangeQ", "Draw Q's range", SCRIPT_PARAM_ONOFF, true)
 			Menu.drawings.drawingsSLF:addParam("SLFrangeQcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeE", "Draw E's range", SCRIPT_PARAM_ONOFF, false)
@@ -97,7 +93,7 @@ function OnLoad()
 			Menu.drawings.drawingsSLF:addParam("SLFrangeR", "Draw R's range", SCRIPT_PARAM_ONOFF, false)
 			Menu.drawings.drawingsSLF:addParam("SLFrangeRcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 		Menu.drawings:addSubMenu("Target", "drawingsTRGT")
-			Menu.drawings.drawingsTRGT:addParam("comboKillMRK", "Mark combo killable enemy", SCRIPT_PARAM_ONOFF, false)
+			Menu.drawings.drawingsTRGT:addParam("comboKillMRK", "Mark combo killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRKcol", "Color", SCRIPT_PARAM_COLOR, {255, 112, 0, 0})
 		Menu:addSubMenu("Addons", "ads")
 			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
