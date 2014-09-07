@@ -1,11 +1,76 @@
+local version = "0.5"
 --[[
-
+	Comment? :_: ^_^
 ]]
 
-require "VPrediction"
-require "SOW"
-
 if myHero.charName ~= "Fizz" then return end
+
+_G.Fizz_Autoupdate = true
+
+local lib_Required = {
+	["SOW"]			= "https://raw.githubusercontent.com/Hellsing/BoL/master/Common/SOW.lua",
+	["VPrediction"]	= "https://raw.githubusercontent.com/Hellsing/BoL/master/Common/VPrediction.lua"
+}
+
+local lib_downloadNeeded, lib_downloadCount = false, 0
+
+function AfterDownload()
+	lib_downloadCount = lib_downloadCount - 1
+	if lib_downloadCount == 0 then
+		lib_downloadNeeded = false
+		print("<font color=\"#FF0000\">Fizz God mode:</font> <font color=\"#FFFFFF\">Required libraries downloaded successfully, please reload (double F9).</font>")
+	end
+end
+
+for lib_downloadName, lib_downloadUrl in pairs(lib_Required) do
+	local lib_fileName = LIB_PATH .. lib_downloadName .. ".lua"
+
+	if FileExist(lib_fileName) then
+		require(lib_downloadName)
+	else
+		lib_downloadNeeded = true
+		lib_downloadCount = lib_downloadCount and lib_downloadCount + 1 or 1
+		DownloadFile(lib_downloadUrl, lib_fileName, function() AfterDownload() end)
+	end
+end
+
+if lib_downloadNeeded then return end
+
+local script_downloadName = "Fizz God mode"
+local script_downloadHost = "raw.github.com"
+local script_downloadPath = "bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
+local script_downloadUrl = "https://" .. script_downloadHost .. script_downloadPath
+local script_filePath = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
+
+function script_Messager(msg) print("<font color=\"#FF0000\">" .. script_downloadName .. ":</font> <font color=\"#FFFFFF\">" .. msg .. ".</font>") end
+
+if _G.Fizz_Autoupdate then
+	local script_webResult = GetWebResult(script_downloadHost, script_downloadPath)
+	if script_webResult then
+		local script_serverVersion = string.match(script_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
+		
+		if script_serverVersion then
+			script_serverVersion = tonumber(string.match(script_serverVersion or "", "%d+%.?%d*"))
+
+			if not script_serverVersion then
+				script_Messager("Please contact the developer of the script \"" .. script_downloadName .. "\", since the auto updater returned an invalid version.")
+				return
+			end
+
+			if tonumber(version) < script_serverVersion then
+				script_Messager("New version available: " .. script_serverVersion)
+				script_Messager("Updating, please don't press F9")
+				DelayAction(function () DownloadFile(script_downloadUrl, script_filePath, function() script_Messager("Successfully updated the script, please reload!") end) end, 2)
+			else
+				script_Messager("You've got the latest version: " .. script_serverVersion)
+			end
+		end
+	else
+		script_Messager("Error downloading server version!")
+	end
+end
+
+
 
 function OnLoad()
 	Variables()
@@ -141,7 +206,7 @@ function Combo()
 			local Mv = Vector(myHero) + 400 * (Vector(mousePos) - Vector(myHero)):normalized()
 			SOWi:MoveTo(Mv.x, Mv.z)
 		end
-		if not Ready(_Q) and not Ready(_W) and not Ready(_E) and not Ready(_R) then
+		if not Ready(_Q) and not Ready(_E) and not Ready(_R) then
 			afterCombo = true
 		end
 		if afterCombo and not Ready(_R) then
