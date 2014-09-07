@@ -36,7 +36,7 @@ if lib_downloadNeeded then return end
 
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/bobczanki/B0L/edit/master/Fizz%20God%20mode.lua".."?rand="..math.random(1,10000)
-local UPDATE_FILE_PATH = BOL_PATH.."Scripts\\Fizz God mode.lua"
+local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 function _AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Fizz God mode:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
@@ -46,7 +46,7 @@ if AUTOUPDATE then
 		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
 		if ServerVersion then
 			if tonumber(version) < ServerVersion then
-				_AutoupdaterMsg("New version available"..ServerVersion)
+				_AutoupdaterMsg("New version available ("..ServerVersion..")")
 				_AutoupdaterMsg("Updating, please don't press F9")
 				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () _AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
 			else
