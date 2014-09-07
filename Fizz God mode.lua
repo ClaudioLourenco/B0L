@@ -86,19 +86,19 @@ function OnLoad()
 	Menu:addSubMenu("Drawings", "drawings")
 		Menu.drawings:addSubMenu("Self", "drawingsSLF")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAA", "Draw AA's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeAAcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeAAcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeQ", "Draw Q's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeQcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeQcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeE", "Draw E's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeEcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeEcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeR", "Draw R's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeRcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeRcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 		Menu.drawings:addSubMenu("Target", "drawingsTRGT")
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRK", "Mark combo killable enemy", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsTRGT:addParam("comboKillMRKcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsTRGT:addParam("comboKillMRKcol", "Color", SCRIPT_PARAM_COLOR, {255, 112, 0, 0})
 		Menu:addSubMenu("Addons", "ads")
 			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.ads:addParam("spellLVL", "Leveling spells mode", SCRIPT_PARAM_LIST, 1, {"none", "E > W", "E > Q", "W > Q", "W > E", "Q > E", "Q > W"})
@@ -107,7 +107,7 @@ function OnLoad()
 		Menu:permaShow("useHarass")
 		Menu:permaShow("useFarm")
 		
-		PrintChat("<font color='#01DF74'>\"Fizzerinho God mode\" - loaded</font>")
+		PrintChat("<font color='#01DF74'>\"Fizzerinho God mode v"..version.."\"</font>")
 end
 
 function Variables()
@@ -304,7 +304,7 @@ function OnDraw()
 	if Menu.drawings.drawingsTRGT.comboKillMRK and ts.target ~= nil then
 		if ts.target.health < cmbo1 then
 			PrintFloatText(ts.target,0,"Combo killable")
-			for i = 0, 10 do
+			for i = 0, 20 do
 				DrawCircle(ts.target.x, ts.target.y, ts.target.z, 50 + i, RGBColor(Menu.drawings.drawingsTRGT.comboKillMRKcol))
 			end
 		end
