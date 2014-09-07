@@ -1,4 +1,4 @@
-local version = "0.5"
+local version = "0.51"
 
 if myHero.charName ~= "Fizz" then return end
 
@@ -200,7 +200,7 @@ function Combo()
 		end
 		
 		if afterCombo and not Ready(_R) then
-			if Ready(_W) and (tsDistance < 175 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
+			if Ready(_W) and (tsDistance < 200 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
 				CastSpell(_W)
 			end
 			if Ready(_Q) and tsDistance < 550 then
