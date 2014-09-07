@@ -1,8 +1,8 @@
-local version = "0.7"
+local version = "0.6"
 
 if myHero.charName ~= "Fizz" then return end
 
-_G.Fizz_Autoupdate = true
+AUTOUPDATE = true
 
 local lib_Required = {
 	["SOW"]			= "https://raw.githubusercontent.com/Hellsing/BoL/master/common/SOW.lua",
@@ -33,40 +33,31 @@ end
 
 if lib_downloadNeeded then return end
 
-local script_downloadName = "Fizz God mode"
-local script_downloadHost = "raw.github.com"
-local script_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
-local script_downloadUrl = "https://" .. script_downloadHost .. script_downloadPath
-local script_filePath = BOL_PATH.."Scripts\\Fizz God mode.lua"
 
-function script_Messager(msg) print("<font color=\"#FF0000\">" .. script_downloadName .. ":</font> <font color=\"#FFFFFF\">" .. msg .. ".</font>") end
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/bobczanki/B0L/edit/master/Fizz%20God%20mode.lua".."?rand="..math.random(1,10000)
+local UPDATE_FILE_PATH = BOL_PATH.."Scripts\\Fizz God mode.lua"
+local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
-if _G.Fizz_Autoupdate then
-
-	local script_webResult = GetWebResult(script_downloadHost, script_downloadPath)
-	if script_webResult then
-		local script_serverVersion = string.match(script_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
-		
-		if script_serverVersion then
-			script_serverVersion = tonumber(string.match(script_serverVersion or "", "%d+%.?%d*"))
-
-			if not script_serverVersion then
-				script_Messager("Please contact the developer of the script \"" .. script_downloadName .. "\", since the auto updater returned an invalid version.")
-				return
-			end
-
-			if tonumber(version) < script_serverVersion then
-				script_Messager("New version available: " .. script_serverVersion)
-				script_Messager("Updating, please don't press F9")
-				DelayAction(function () DownloadFile(script_downloadUrl, script_filePath, function() script_Messager("Successfully updated the script, please reload!") end) end, 2)
+function _AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Fizz God mode:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
+if AUTOUPDATE then
+	local ServerData = GetWebResult(UPDATE_HOST, "/bobczanki/B0L/master/Fizz%20God%20mode.version")
+	if ServerData then
+		ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
+		if ServerVersion then
+			if tonumber(version) < ServerVersion then
+				_AutoupdaterMsg("New version available"..ServerVersion)
+				_AutoupdaterMsg("Updating, please don't press F9")
+				DelayAction(function() DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () _AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end) end, 3)
 			else
-				script_Messager("You've got the latest version: " .. script_serverVersion)
+				_AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
 			end
 		end
 	else
-		script_Messager("Error downloading server version!")
+		_AutoupdaterMsg("Error downloading version info")
 	end
 end
+
 
 
 function OnLoad()
