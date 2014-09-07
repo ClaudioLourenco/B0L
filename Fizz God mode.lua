@@ -39,14 +39,17 @@ local script_downloadName = "Fizz God mode"
 local script_downloadHost = "raw.github.com"
 local script_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
 local script_downloadUrl = "https://" .. script_downloadHost .. script_downloadPath
-local script_filePath = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
+local script_filePath = BOL_PATH.."Scripts\\Fizz God mode.lua"
 
 function script_Messager(msg) print("<font color=\"#FF0000\">" .. script_downloadName .. ":</font> <font color=\"#FFFFFF\">" .. msg .. ".</font>") end
 
 if _G.Fizz_Autoupdate then
+	local script_webResult = GetWebResult(script_downloadHost, script_downloadPath)
 	local version_webResult = GetWebResult(version_downloadHost, version_downloadPath)
-	if version_webResult then
-		local script_serverVersion = string.match(version_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
+	script_Messager("version_webResult"..version_webResult)
+	script_Messager("script_webResult"..script_webResult)
+	if script_webResult then
+		local script_serverVersion = string.match(script_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
 		
 		if script_serverVersion then
 			script_serverVersion = tonumber(string.match(script_serverVersion or "", "%d+%.?%d*"))
