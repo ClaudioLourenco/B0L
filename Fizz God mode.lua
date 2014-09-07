@@ -33,6 +33,8 @@ end
 
 if lib_downloadNeeded then return end
 
+local version_downloadHost = "raw.github.com"
+local version_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.version" .. "?rand=" .. math.random(1, 10000)
 local script_downloadName = "Fizz God mode"
 local script_downloadHost = "raw.github.com"
 local script_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
@@ -42,9 +44,9 @@ local script_filePath = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 function script_Messager(msg) print("<font color=\"#FF0000\">" .. script_downloadName .. ":</font> <font color=\"#FFFFFF\">" .. msg .. ".</font>") end
 
 if _G.Fizz_Autoupdate then
-	local script_webResult = GetWebResult(script_downloadHost, script_downloadPath)
-	if script_webResult then
-		local script_serverVersion = string.match(script_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
+	local version_webResult = GetWebResult(version_downloadHost, version_downloadPath)
+	if version_webResult then
+		local script_serverVersion = string.match(version_webResult, "local%s+version%s+=%s+\"%d+.%d+\"")
 		
 		if script_serverVersion then
 			script_serverVersion = tonumber(string.match(script_serverVersion or "", "%d+%.?%d*"))
@@ -71,14 +73,14 @@ end
 function OnLoad()
 	Variables()
 	
-	Menu = scriptConfig("Fizzerinho God mode", "FizzScript")
+	Menu = scriptConfig("Fizz God mode", "FizzScript")
 	
 	ts.name = "Focus"
 	Menu:addTS(ts)
 	
 	Menu:addParam("useCombo", "Combo!", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 	Menu:addParam("useHarass", "Harass!", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
-	Menu:addParam("useFarm", "Farm! (SOW)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("Z"))
+	Menu:addParam("useFarm", "Farm! (SOW)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 	Menu:addSubMenu("Drawings", "drawings")
 		Menu.drawings:addSubMenu("Self", "drawingsSLF")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAA", "Draw AA's range", SCRIPT_PARAM_ONOFF, false)
@@ -102,8 +104,6 @@ function OnLoad()
 		Menu:permaShow("useCombo")
 		Menu:permaShow("useHarass")
 		Menu:permaShow("useFarm")
-		
-		PrintChat("<font color='#01DF74'>\"Fizzerinho God mode v"..version.."\"</font>")
 end
 
 function Variables()
@@ -206,7 +206,7 @@ function Combo()
 			afterCombo = true
 		end
 		if afterCombo and not Ready(_R) then
-			if Ready(_W) and (tsDistance < 200 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
+			if Ready(_W) and (tsDistance < 175 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
 				CastSpell(_W)
 			end
 			if Ready(_Q) and tsDistance < 550 then
