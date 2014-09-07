@@ -194,7 +194,7 @@ function Combo()
 			afterCombo = true
 		end
 		if afterCombo and not Ready(_R) then
-			if Ready(_W) and (tsDistance < 175 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
+			if Ready(_W) and (tsDistance < 200 or (Ready(_W) and Ready(_Q) and tsDistance < 550)) then
 				CastSpell(_W)
 			end
 			if Ready(_Q) and tsDistance < 550 then
