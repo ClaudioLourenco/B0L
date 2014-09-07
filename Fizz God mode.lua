@@ -35,7 +35,7 @@ if lib_downloadNeeded then return end
 
 local script_downloadName = "Fizz God mode"
 local script_downloadHost = "raw.github.com"
-local script_downloadPath = "/bobczanki/B0L/blob/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
+local script_downloadPath = "/bobczanki/B0L/master/Fizz%20God%20mode.lua" .. "?rand=" .. math.random(1, 10000)
 local script_downloadUrl = "https://" .. script_downloadHost .. script_downloadPath
 local script_filePath = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 
