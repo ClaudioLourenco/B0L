@@ -86,6 +86,7 @@ function OnLoad()
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRK", "Mark combo killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.drawings.drawingsTRGT:addParam("comboKillMRKcol", "Color", SCRIPT_PARAM_COLOR, {255, 112, 0, 0})
 		Menu:addSubMenu("Addons", "ads")
+			Menu.drawings.drawingsSLF:addParam("spi", "Ignite currently not working", SCRIPT_PARAM_INFO, "")
 			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.ads:addParam("spellLVL", "Leveling spells mode", SCRIPT_PARAM_LIST, 1, {"none", "E > W", "E > Q", "W > Q", "W > E", "Q > E", "Q > W"})
 			
@@ -195,7 +196,7 @@ function Combo()
 		if not Ready(_Q) and not Ready(_E) and not Ready(_R) then
 			afterCombo = true
 		end
-		if os.clock() > Rcheck + 3 and (Ready(_Q) or Ready(_E)) then
+		if os.clock() > Rcheck + 2.5 and (Ready(_Q) or Ready(_E)) then
 			afterCombo = true
 		end
 		
