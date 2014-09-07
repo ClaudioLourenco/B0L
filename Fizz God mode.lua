@@ -82,7 +82,7 @@ function OnLoad()
 	
 	Menu:addParam("useCombo", "Combo!", SCRIPT_PARAM_ONKEYDOWN, false, 32)
 	Menu:addParam("useHarass", "Harass!", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
-	Menu:addParam("useFarm", "Farm! (SOW)", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("Z"))
+	Menu:addParam("useFarm", "Farm! (SOW)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("Z"))
 	Menu:addSubMenu("Drawings", "drawings")
 		Menu.drawings:addSubMenu("Self", "drawingsSLF")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAA", "Draw AA's range", SCRIPT_PARAM_ONOFF, false)
@@ -144,9 +144,9 @@ function Variables()
 end
 
 function OnTick()
-	ts:update()
-	GetItems()
+	Initiate()
 	MaxSpells()
+	
 	if Menu.ads.autoIGN then AutoIGN() end 
 	if Menu.useCombo then
 		Combo()
@@ -338,7 +338,8 @@ function enemiesClose(range)
 	return enmsClose
 end
 
-function GetItems()
+function Initiate()
+	ts:update()
 	DFG = GetInventorySlotItem(3128)
 	if ts.target ~= nil then tsDistance = GetDistance(ts.target) end
 end
