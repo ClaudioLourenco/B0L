@@ -1,4 +1,4 @@
-local version = "1.1"
+local version = "1.0"
 
 if myHero.charName ~= "Katarina" then return end
 
@@ -72,7 +72,7 @@ function OnLoad()
 	Menu:addSubMenu("Harass", "harass")
 		Menu.harass:addParam("useHarass", "Harass!", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("A"))
 	Menu:addSubMenu("Farm", "farm")
-		Menu.farm:addParam("useFarm", "Farm!", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("X"))
+		Menu.farm:addParam("useFarm", "Farm!", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("X"))
 		Menu.farm:addParam("farmAA", "Farm with AA", SCRIPT_PARAM_ONOFF, true)
 		Menu.farm:addParam("farmQ", "Farm with Q", SCRIPT_PARAM_ONOFF, true)
 		Menu.farm:addParam("farmW", "Farm with W", SCRIPT_PARAM_ONOFF, true)
@@ -82,20 +82,23 @@ function OnLoad()
 		Menu.drawings:addParam("enemyMRK", "Enemies", SCRIPT_PARAM_ONOFF, true)
 		Menu.drawings:addParam("minionMRK", "Minions", SCRIPT_PARAM_ONOFF, true)
 		Menu.drawings:addSubMenu("Self", "drawingsSLF")
+			Menu.drawings.drawingsSLF:addParam("SLFrangeWard", "Draw Ward's range", SCRIPT_PARAM_ONOFF, false)
+			Menu.drawings.drawingsSLF:addParam("SLFrangeWardcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
+			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeAA", "Draw AA's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeAAcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeAAcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeQ", "Draw Q's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeQcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeQcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeW", "Draw W's range", SCRIPT_PARAM_ONOFF, true)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeWcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeWcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeE", "Draw E's range", SCRIPT_PARAM_ONOFF, true)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeEcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeEcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 			Menu.drawings.drawingsSLF:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsSLF:addParam("SLFrangeR", "Draw R's range", SCRIPT_PARAM_ONOFF, false)
-			Menu.drawings.drawingsSLF:addParam("SLFrangeRcol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsSLF:addParam("SLFrangeRcol", "Color", SCRIPT_PARAM_COLOR, {255, 41, 41, 41})
 		
 		Menu.drawings:addSubMenu("Target", "drawingsTRGT")
 			Menu.drawings.drawingsTRGT:addParam("TRcol", "Color of the mark", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
@@ -103,10 +106,10 @@ function OnLoad()
 		
 		Menu.drawings:addSubMenu("Enemies", "drawingsENMS")
 			Menu.drawings.drawingsENMS:addParam("Rkill", "Mark when QWE + 1/2 R killable", SCRIPT_PARAM_ONOFF, true)
-			Menu.drawings.drawingsENMS:addParam("RkillCol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsENMS:addParam("RkillCol", "Color", SCRIPT_PARAM_COLOR, {255, 0, 105, 112})
 			Menu.drawings.drawingsENMS:addParam("spi", "", SCRIPT_PARAM_INFO, "")
 			Menu.drawings.drawingsENMS:addParam("noRkill", "Mark when QWE killable", SCRIPT_PARAM_ONOFF, true)
-			Menu.drawings.drawingsENMS:addParam("noRkillCol", "Color", SCRIPT_PARAM_COLOR, {255, 15, 112, 0})
+			Menu.drawings.drawingsENMS:addParam("noRkillCol", "Color", SCRIPT_PARAM_COLOR, {255, 112, 0, 0})
 		
 		
 		Menu.drawings:addSubMenu("Minions", "minionMRK")
@@ -135,21 +138,13 @@ function OnLoad()
 end
 
 function Variables()
-	ignite = nil
-	DFG = nil
+	VP = VPrediction(true)
+	SOWi = SOW(VP)
 	
-	goodWard = nil
-	sightWard = nil
-	visionWard = nil
-	trinket = nil
-	
+	castAt, lastE, LastWard, tsDistance, qMark, checkAA, checkQ, checkW = 0
+	ward, ignite, DFG = nil
+
 	ulting = false
-	enmsClose = 0
-	tsDistance = 0
-	qMark = 0
-	checkAA = 0
-	checkQ = 0
-	checkW = 0
 
 	maxNone = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 	maxQWE = {3,2,1,1,1,4,1,2,1,2,4,2,2,3,3,4,3,3}
@@ -194,7 +189,7 @@ function Combo()
 			else
 				if Ready(_E) and tsDistance < 674 then CastSpell(_E, ts.target) end
 			end
-			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 375 then CastSpell(_W) end
+			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then CastSpell(_W) end
 			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then 
 				CastSpell(_R) 
 				ulting = true
@@ -207,14 +202,14 @@ end
 function Harass()
 	if ts.target ~= nil then
 		SOWOrbWalk(ts.target)
-		if tsDistance < 675 and tsDistance > 375 then
+		if tsDistance < 675 and tsDistance > 400 then
 			if Ready(_Q) then
 				CastSpell(_Q, ts.target) 
 				checkQ = os.clock()
 			end
 			if Ready(_E) and os.clock() > checkW + 3 then CastSpell(_E, ts.target) end	
 		end
-		if tsDistance < 375 then
+		if tsDistance < 400 then
 			if Ready(_Q) then 
 			CastSpell(_Q, ts.target) 
 			checkQ = os.clock()
@@ -234,16 +229,20 @@ function Farm()
 		local qDMG = getDmg("Q",minion,myHero)
 		local wDMG = getDmg("W",minion,myHero)
 		if not minion.dead then
-			if Menu.farm.farmQ and (GetDistance(minion) > 375 or not Ready(_W) or not Menu.farm.farmW) and GetDistance(minion) < 675 and qDMG > minion.health and Ready(_Q) and (GetDistance(minion) > 125 or (Menu.farm.farmAA == false and (Ready(_W) == false or Menu.farm.farmW == false))) then CastSpell(_Q, minion) end
-			if Menu.farm.farmW and (GetDistance(minion) > 125 or not Menu.farm.farmAA) and GetDistance(minion) < 375 and wDMG > minion.health and Ready(_W) then CastSpell(_W) end
+			if Menu.farm.farmQ and (GetDistance(minion) > 400 or not Ready(_W) or not Menu.farm.farmW) and GetDistance(minion) < 675 and qDMG > minion.health and Ready(_Q) and (GetDistance(minion) > 195 or (Menu.farm.farmAA == false and (Ready(_W) == false or Menu.farm.farmW == false))) then CastSpell(_Q, minion) end
+			if Menu.farm.farmW and (GetDistance(minion) > 195 or not Menu.farm.farmAA) and GetDistance(minion) < 400 and wDMG > minion.health and Ready(_W) then CastSpell(_W) end
 		end
 	end
-	local target = SOWKillableMinion() or SOWi:GetTarget()
-	SOWOrbWalk(target)
+	if Menu.farm.farmAA then
+		local target = SOWKillableMinion() or SOWi:GetTarget()
+		SOWOrbWalk(target)
+	else
+		player:MoveTo(mousePos.x, mousePos.z)
+	end
 end
 
 function AutoKS()
-	if ts.target ~= nil and enemiesClose(700) > 0 then
+	if ts.target ~= nil then
 		for _, enemy in pairs(enemyHeroes) do
 			if not enemy.dead and GetDistance(enemy) < 700 and qweDMG(enemy) > enemy.health then 
 				if Ready(_Q) and GetDistance(enemy) < 675 then CastSpell(_Q, enemy) end
@@ -262,14 +261,44 @@ end
 
 function Initiate()
 	ts:update()
-
+	MaxSpells()
 	DFG = GetInventorySlotItem(3128)
-	sightWard = GetInventorySlotItem(2044)
-	visionWard = GetInventorySlotItem(2043)
-	
+
 	if ts.target ~= nil then 
 		tsDistance = GetDistance(ts.target)
 	end
+end
+
+function WardJump()
+	player:MoveTo(mousePos.x, mousePos.z)
+	if ward and GetTickCount() < castAt + 1000 and Ready(_E) then
+CastSpell(_E, ward)
+end
+	if GetTickCount() > LastWard + 3000 then
+	local slot = GetWardSlot()
+	if slot then
+		if GetDistance(mousePos) <= 600 then
+			CastSpell(slot, mousePos.x, mousePos.z)
+		else
+			local MyPos = Vector(myHero.x, myHero.y, myHero.z)
+			local MousePos = Vector(mousePos.x, mousePos.y, mousePos.z)
+			local pos = MyPos - (MyPos - MousePos):normalized() * 600
+			CastSpell(slot, pos.x, pos.z)
+		end
+		castAt = GetTickCount()
+	end
+	end
+end
+
+function GetWardSlot()
+	if not Ready(_E) then return end
+	local wards = { 2044, 2043, 2049, 2045, 3154, 3340, 3350, 3361, 3362 }
+	for _, ward in ipairs(wards) do
+		if GetInventorySlotItem(ward) and myHero:CanUseSpell(GetInventorySlotItem(ward)) == READY then
+			return GetInventorySlotItem(ward)
+		end
+	end
+	return nil
 end
 
 function AutoIGN()
@@ -332,15 +361,19 @@ function SOWKillableMinion()
 end
 
 function OnDraw()
+	if myHero.dead then return end
 	if Menu.drawings.selfDraw then
+		if Menu.drawings.drawingsSLF.SLFrangeWard then
+			DrawCircle(myHero.x, myHero.y, myHero.z, 600, RGBColor(Menu.drawings.drawingsSLF.SLFrangeWardcol))
+		end
 		if Menu.drawings.drawingsSLF.SLFrangeAA then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 125, RGBColor(Menu.drawings.drawingsSLF.SLFrangeAAcol))
+			DrawCircle(myHero.x, myHero.y, myHero.z, 190, RGBColor(Menu.drawings.drawingsSLF.SLFrangeAAcol))
 		end
 		if Menu.drawings.drawingsSLF.SLFrangeQ then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 675, RGBColor(Menu.drawings.drawingsSLF.SLFrangeQcol))
 		end
 		if Menu.drawings.drawingsSLF.SLFrangeW then
-			DrawCircle(myHero.x, myHero.y, myHero.z, 375, RGBColor(Menu.drawings.drawingsSLF.SLFrangeWcol))
+			DrawCircle(myHero.x, myHero.y, myHero.z, 400, RGBColor(Menu.drawings.drawingsSLF.SLFrangeWcol))
 		end
 		if Menu.drawings.drawingsSLF.SLFrangeE then
 			DrawCircle(myHero.x, myHero.y, myHero.z, 700, RGBColor(Menu.drawings.drawingsSLF.SLFrangeEcol))
@@ -358,7 +391,7 @@ function OnDraw()
 
 	if Menu.drawings.enemyMRK then
 		for _, enemy in pairs(enemyHeroes) do
-		local qDMG = getDmg("Q",enemy,myHero, 2) --? 2||3
+		local qDMG = getDmg("Q",enemy,myHero, 2)
 		local wDMG = getDmg("W",enemy,myHero)
 		local eDMG = getDmg("E",enemy,myHero)
 		local rDMG = getDmg("R",enemy,myHero)
@@ -379,7 +412,7 @@ function OnDraw()
 	end
 
 	if Menu.drawings.minionMRK then
-		for _, minion in pairs(enemyMinions.objects) do
+		for _, minion in pairs(EnemyMinions.objects) do
 			local qDMG = getDmg("Q",minion,myHero)
 			local wDMG = getDmg("W",minion,myHero)
 			local eDMG = getDmg("E",minion,myHero)
@@ -427,8 +460,13 @@ function Ready(spell)
 	end
 end
 
-function OnCreateObj(object)
-	if object.name:find("katarina_daggered") then qMark = os.clock() end
+function OnCreateObj(obj)
+	if obj.name:find("katarina_daggered") then qMark = os.clock() end
+	if (obj.name:find("Ward") or obj.name:find("Trinket")) and GetTickCount() < castAt + 1000 and GetTickCount() > lastE + 1000 then		
+		LastWard = GetTickCount()
+		lastE = GetTickCount()
+		ward = obj
+	end
 end
 
 function RGBColor(menu)
@@ -449,6 +487,9 @@ function OnProcessSpell(object,spell)
 	if object == myHero then
 		if spell.name:lower():find("katarinar") then
 			ulting = true
+		end
+		if spell.name:lower():find("katarinae") then
+			ward = nil
 		end
 	end
 end
