@@ -141,8 +141,8 @@ function Variables()
 	VP = VPrediction(true)
 	SOWi = SOW(VP)
 	
-	castAt, lastE, LastWard, tsDistance, qMark, checkAA, checkQ, checkW = 0
-	ward, ignite, DFG = nil
+	castAt, lastE, LastWard, tsDistance, qMark, checkAA, checkQ, checkW = 0, 0, 0, 0, 0, 0, 0, 0
+	ward, ignite, DFG = nil, nil, nil
 
 	ulting = false
 
