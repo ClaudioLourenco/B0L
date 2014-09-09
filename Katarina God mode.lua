@@ -33,13 +33,13 @@ if lib_downloadNeeded then return end
 
 
 local UPDATE_HOST = "raw.github.com"
-local UPDATE_PATH = "/bobczanki/B0L/master/Fizz%20God%20mode.lua".."?rand="..math.random(1,10000)
+local UPDATE_PATH = "/bobczanki/B0L/master/Katarina%20God%20mode.lua".."?rand="..math.random(1,10000)
 local UPDATE_FILE_PATH = SCRIPT_PATH .. GetCurrentEnv().FILE_NAME
 local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
 
 function AutoupdaterMsg(msg) print("<font color=\"#6699ff\"><b>Katarina God mode:</b></font> <font color=\"#FFFFFF\">"..msg..".</font>") end
 
-local ServerData = GetWebResult(UPDATE_HOST, "/bobczanki/B0L/master/Fizz%20God%20mode.version")
+local ServerData = GetWebResult(UPDATE_HOST, "/bobczanki/B0L/master/Katarina%20God%20mode.version")
 
 if ServerData then
 	ServerVersion = type(tonumber(ServerData)) == "number" and tonumber(ServerData) or nil
@@ -132,11 +132,8 @@ function OnLoad()
 	Menu.combo:permaShow("useCombo")
 	Menu.harass:permaShow("useHarass")
 	Menu.farm:permaShow("useFarm")
-	
-	PrintChat("<font color='#01DF74'>\"Pentarina Combo - The sinster blade\" - loaded</font>")
-	
-	
 end
+
 function Variables()
 	ignite = nil
 	DFG = nil
