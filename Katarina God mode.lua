@@ -190,7 +190,7 @@ function Combo()
 				if Ready(_E) and tsDistance < 674 then CastSpell(_E, ts.target) end
 			end
 			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then CastSpell(_W) end
-			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then 
+			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) and not SOWi:BeforeAttack(ts.target) then 
 				CastSpell(_R) 
 				ulting = true
 			end	
@@ -229,8 +229,8 @@ function Farm()
 		local qDMG = getDmg("Q",minion,myHero)
 		local wDMG = getDmg("W",minion,myHero)
 		if not minion.dead then
-			if Menu.farm.farmQ and (GetDistance(minion) > 400 or not Ready(_W) or not Menu.farm.farmW) and GetDistance(minion) < 675 and qDMG > minion.health and Ready(_Q) and (GetDistance(minion) > 195 or (Menu.farm.farmAA == false and (Ready(_W) == false or Menu.farm.farmW == false))) then CastSpell(_Q, minion) end
-			if Menu.farm.farmW and (GetDistance(minion) > 195 or not Menu.farm.farmAA) and GetDistance(minion) < 400 and wDMG > minion.health and Ready(_W) then CastSpell(_W) end
+			if Menu.farm.farmQ and (GetDistance(minion) > 400 or not Ready(_W) or not Menu.farm.farmW) and GetDistance(minion) < 675 and qDMG > minion.health and Ready(_Q) and (GetDistance(minion) > 195 or (Menu.farm.farmAA == false or not SOWi:CanAttack())) then CastSpell(_Q, minion) end
+			if Menu.farm.farmW and (GetDistance(minion) > 195 or (Menu.farm.farmAA == false or not SOWi:CanAttack())) and GetDistance(minion) < 400 and wDMG > minion.health and Ready(_W) then CastSpell(_W) end
 		end
 	end
 	if Menu.farm.farmAA then
