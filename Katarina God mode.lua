@@ -30,7 +30,7 @@ for lib_downloadName, lib_downloadUrl in pairs(lib_Required) do
 end
 
 if lib_downloadNeeded then return end
-
+ 
 
 local UPDATE_HOST = "raw.github.com"
 local UPDATE_PATH = "/bobczanki/B0L/master/Katarina%20God%20mode.lua".."?rand="..math.random(1,10000)
