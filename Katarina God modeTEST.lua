@@ -414,12 +414,12 @@ function OnDraw()
 		local rDMG = getDmg("R",enemy,myHero)
 		local hfRcmb = qDMG + wDMG + eDMG + rDMG * 0.5
 		local noRcmb = qDMG + wDMG + eDMG
-			if ts.target ~= nil and Menu.drawings.drawingsENMS.Rkill and enemy.health < hfRcmb and enemy.health > noRcmb then
+			if Menu.drawings.drawingsENMS.Rkill and enemy.health < hfRcmb and enemy.health > noRcmb then
 				for i = 0, 10 do
 					DrawCircle(enemy.x, enemy.y, enemy.z, 70 + i, RGBColor(Menu.drawings.drawingsENMS.RkillCol))
 				end
 			end
-			if ts.target ~= nil and Menu.drawings.drawingsENMS.noRkill and enemy.health < noRcmb and not enemy.dead then
+			if Menu.drawings.drawingsENMS.noRkill and enemy.health < noRcmb and not enemy.dead then
 				for i = 0, 10 do
 					DrawCircle(enemy.x, enemy.y, enemy.z, 70 + i, RGBColor(Menu.drawings.drawingsENMS.noRkillCol))
 					DrawCircle(enemy.x, enemy.y, enemy.z, 90 + i, RGBColor(Menu.drawings.drawingsENMS.noRkillCol))
