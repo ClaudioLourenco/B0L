@@ -129,7 +129,7 @@ function OnLoad()
 		Menu:addSubMenu("Addons", "ads")
 			Menu.ads:addParam("wardJump", "Jump to ward", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("T"))
 			Menu.ads:addParam("autoKS", "Auto KS", SCRIPT_PARAM_ONOFF, true)
-			Menu.ads:addParam("human", "Humanization", SCRIPT_PARAM_ONOFF, false)
+			Menu.ads:addParam("human", "Humanization level", SCRIPT_PARAM_SLICE, 0, 0, 9, 0)
 			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
 			Menu.ads:addParam("spellLVL3", "Leveling spells mode 1-3", SCRIPT_PARAM_LIST, 1, {"none", "Q-E-W", "E-Q-W"})
 			Menu.ads:addParam("spellLVL", "Leveling spells mode 3-18", SCRIPT_PARAM_LIST, 1, {"none", "Q > W", "W > Q"})
@@ -187,19 +187,19 @@ function Combo()
 				CastSpell(DFG, ts.target)
 				checkDFG = os.clock()
 			end
-			if (Menu.ads.human == false or os.clock() > checkDFG + 0.2) and Ready(_Q) and tsDistance < 675 then 
+			if os.clock() > checkDFG + Menu.ads.human * 0.1 and Ready(_Q) and tsDistance < 675 then 
 				CastSpell(_Q, ts.target)
 				checkQ = os.clock()
 			end
-			if (Menu.ads.human == false or os.clock() > checkQ + 0.2) and (Menu.combo.allowE or tsDistance < 674) and Ready(_E) then
+			if os.clock() > checkQ + Menu.ads.human * 0.1 and (Menu.combo.allowE or tsDistance < 674) and Ready(_E) then
 				CastSpell(_E, ts.target)
 				checkE = os.clock()
 			end
-			if (Menu.ads.human == false or os.clock() > checkE + 0.2) and Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then
+			if os.clock() > checkE + Menu.ads.human * 0.1 and Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then
 				CastSpell(_W) 
 				checkW = os.clock()
 			end
-			if (Menu.ads.human == false or os.clock() > checkW + 0.2) and Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then --and not SOWi:BeforeAttack(ts.target) 
+			if os.clock() > checkW + Menu.ads.human * 0.1 and Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then --and not SOWi:BeforeAttack(ts.target) 
 				CastSpell(_R) 
 				ulting = true
 			end	
@@ -288,7 +288,7 @@ end
 
 function WardJump()
 	player:MoveTo(mousePos.x, mousePos.z)
-	if ward and GetTickCount() < castAt + 1000 and Ready(_E) and (Menu.ads.human == false or GetTickCount() > castAt + 50) then
+	if ward and GetTickCount() < castAt + 1000 and Ready(_E) and (Menu.ads.human == 0 or GetTickCount() > castAt + 50) then
 CastSpell(_E, ward)
 end
 	if GetTickCount() > LastWard + 3000 then
