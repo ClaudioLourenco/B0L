@@ -190,7 +190,7 @@ function Combo()
 				if Ready(_E) and tsDistance < 674 then CastSpell(_E, ts.target) end
 			end
 			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then CastSpell(_W) end
-			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) and not SOWi:BeforeAttack(ts.target) then 
+			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then --and not SOWi:BeforeAttack(ts.target) 
 				CastSpell(_R) 
 				ulting = true
 			end	
