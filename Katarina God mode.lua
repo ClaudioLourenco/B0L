@@ -1,4 +1,4 @@
-local version = "1.0"
+local version = "1.1"
 
 if myHero.charName ~= "Katarina" then return end
 
@@ -128,9 +128,7 @@ function OnLoad()
 			
 		Menu:addSubMenu("Addons", "ads")
 			Menu.ads:addParam("wardJump", "Jump to ward", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("T"))
-			Menu.ads:addParam("autoKS", "Auto KS", SCRIPT_PARAM_ONOFF, true)
-			Menu.ads:addParam("autoIGN", "Auto ignite killable enemy", SCRIPT_PARAM_ONOFF, true)
-			Menu.ads:addParam("spellLVL", "Leveling spells mode", SCRIPT_PARAM_LIST, 1, {"none", "Q > W", "W > Q"})
+			Menu:addParam("godMode", "God mode", SCRIPT_PARAM_ONOFF, false)
 		
 	Menu.combo:permaShow("useCombo")
 	Menu.harass:permaShow("useHarass")
@@ -141,14 +139,10 @@ function Variables()
 	VP = VPrediction(true)
 	SOWi = SOW(VP)
 	
-	castAt, lastE, LastWard, tsDistance, qMark, checkAA, checkQ, checkW = 0, 0, 0, 0, 0, 0, 0, 0
+	castAt, lastE, LastWard, tsDistance, qMark, checkQ, checkW, checkDFG, moveStop, checkE = 0,0,0,0,0,0,0,0,0,0
 	ward, ignite, DFG = nil, nil, nil
 
-	ulting = false
-
-	maxNone = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-	maxQWE = {3,2,1,1,1,4,1,2,1,2,4,2,2,3,3,4,3,3}
-	maxWQE = {3,2,1,2,2,4,2,1,2,1,4,1,1,3,3,4,3,3}
+	ulting = false 
 	
 	ts = TargetSelector(TARGET_LESS_CAST,700)
 	enemyHeroes = GetEnemyHeroes()
@@ -160,13 +154,12 @@ end
 function OnTick()
 	Initiate()
 
-	if Menu.ads.autoIGN then AutoIGN() end 
 	if Menu.ads.wardJump then WardJump() end
 	if Menu.combo.useCombo then
 		Combo()
 		return
 	end
-	if Menu.ads.autoKS then AutoKS() end
+	if Menu.godMode then AutoKS() end
 	if Menu.harass.useHarass then
 		Harass()
 		return
@@ -176,23 +169,30 @@ end
 
 function Combo()
 	if ts.target ~= nil then
-		if not ulting then SOWOrbWalk(ts.target) end
-		if ulting and (qweDMG(ts.target) > ts.target.health or ts.target.dead) then ulting = false end
+		if not ulting and (Menu.godMode or os.clock() > moveStop + 0.3) then SOWOrbWalk(ts.target) end
+		if ulting and (qweDMG(ts.target) > ts.target.health) then
+			ulting = false
+			end
 		if tsDistance < 700 and not ts.target.dead and not ulting then
-			if Ready(DFG) then CastSpell(DFG, ts.target) end
-			if Ready(_Q) and tsDistance < 675 then 
+			if Ready(DFG) then 
+				CastSpell(DFG, ts.target)
+				moveStop = os.clock()
+			end
+			if Ready(_Q) and tsDistance < 675 and (Menu.godMode or os.clock() > moveStop + 0.3) then 
 				CastSpell(_Q, ts.target)
-					checkQ = os.clock()
+				moveStop = os.clock()
 			end
-			if Menu.combo.allowE then
-				if Ready(_E) then CastSpell(_E, ts.target) end
-			else
-				if Ready(_E) and tsDistance < 674 then CastSpell(_E, ts.target) end
+			if (Menu.godMode or os.clock() > moveStop + 0.3) and (Menu.godMode or tsDistance < 674) and Ready(_E) and (Menu.godMode or not Ready(_Q)) then
+				CastSpell(_E, ts.target)
+				moveStop = os.clock()
 			end
-			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) and tsDistance < 400 then CastSpell(_W) end
-			if Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then --and not SOWi:BeforeAttack(ts.target) 
-				CastSpell(_R) 
+			if Ready(_W) and os.clock() > qMark + 0.3 and tsDistance < 400 and not Ready(_Q) and (Menu.godMode or os.clock() > moveStop + 0.2) and not Ready(_E) then
+				CastSpell(_W) 
+				moveStop = os.clock()
+			end
+			if (Menu.godMode or os.clock() > moveStop + 0.1) and Ready(_R) and tsDistance < 400 and not Ready(DFG) and not Ready(_Q) and not Ready(_W) and not Ready(_E) then
 				ulting = true
+				CastSpell(_R) 
 			end	
 		end
 	end
@@ -207,14 +207,14 @@ function Harass()
 				CastSpell(_Q, ts.target) 
 				checkQ = os.clock()
 			end
-			if Ready(_E) and os.clock() > checkW + 3 then CastSpell(_E, ts.target) end	
+			if Ready(_E) and os.clock() > checkW + 3 and (Menu.godMode or os.clock() > checkQ + 0.2) then CastSpell(_E, ts.target) end	
 		end
 		if tsDistance < 400 then
 			if Ready(_Q) then 
-			CastSpell(_Q, ts.target) 
-			checkQ = os.clock()
+				CastSpell(_Q, ts.target) 
+				checkQ = os.clock()
 			end
-			if Ready(_W) and (os.clock() < qMark + 1 or (Ready(_Q) == false and os.clock() > checkQ + 1)) then
+			if Ready(_W) and os.clock() > qMark and not Ready(_Q) then
 				CastSpell(_W)
 				checkW = os.clock()
 			end
@@ -253,15 +253,8 @@ function AutoKS()
 	end
 end
 
-function MaxSpells()
-	if Menu.ads.spellLVL == 1 then autoLevelSetSequence(maxNone) end
-	if Menu.ads.spellLVL == 2 then autoLevelSetSequence(maxQWE) end
-	if Menu.ads.spellLVL == 3 then autoLevelSetSequence(maxWQE) end
-end
-
 function Initiate()
 	ts:update()
-	MaxSpells()
 	DFG = GetInventorySlotItem(3128)
 
 	if ts.target ~= nil then 
@@ -270,10 +263,11 @@ function Initiate()
 end
 
 function WardJump()
-	player:MoveTo(mousePos.x, mousePos.z)
-	if ward and GetTickCount() < castAt + 1000 and Ready(_E) then
-CastSpell(_E, ward)
-end
+	if godMode or (Menu.godMode or os.clock() > moveStop + 0.3) then player:MoveTo(mousePos.x, mousePos.z) end
+	if ward and GetTickCount() < castAt + 1000 and Ready(_E) and (Menu.godMode or GetTickCount() > castAt + 200) then
+		CastSpell(_E, ward)
+		moveStop = os.clock()
+	end
 	if GetTickCount() > LastWard + 3000 then
 	local slot = GetWardSlot()
 	if slot then
@@ -285,6 +279,7 @@ end
 			local pos = MyPos - (MyPos - MousePos):normalized() * 600
 			CastSpell(slot, pos.x, pos.z)
 		end
+		moveStop = os.clock()
 		castAt = GetTickCount()
 	end
 	end
@@ -397,12 +392,12 @@ function OnDraw()
 		local rDMG = getDmg("R",enemy,myHero)
 		local hfRcmb = qDMG + wDMG + eDMG + rDMG * 0.5
 		local noRcmb = qDMG + wDMG + eDMG
-			if ts.target ~= nil and Menu.drawings.drawingsENMS.Rkill and ts.target.health < hfRcmb and ts.target.health > noRcmb then
+			if Menu.drawings.drawingsENMS.Rkill and enemy.health < hfRcmb and enemy.visible and enemy.health > noRcmb then
 				for i = 0, 10 do
 					DrawCircle(enemy.x, enemy.y, enemy.z, 70 + i, RGBColor(Menu.drawings.drawingsENMS.RkillCol))
 				end
 			end
-			if ts.target ~= nil and Menu.drawings.drawingsENMS.noRkill and ts.target.health < noRcmb then
+			if Menu.drawings.drawingsENMS.noRkill and enemy.health < noRcmb and enemy.visible and not enemy.dead then
 				for i = 0, 10 do
 					DrawCircle(enemy.x, enemy.y, enemy.z, 70 + i, RGBColor(Menu.drawings.drawingsENMS.noRkillCol))
 					DrawCircle(enemy.x, enemy.y, enemy.z, 90 + i, RGBColor(Menu.drawings.drawingsENMS.noRkillCol))
